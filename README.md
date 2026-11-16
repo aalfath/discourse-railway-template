@@ -1,5 +1,7 @@
 # Discourse on Railway
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/discourse-1?utm_medium=integration&utm_source=button&utm_campaign=discourse)
+
 Railway template for [Discourse](https://www.discourse.org/), the open-source discussion forum, with PostgreSQL (pgvector) and Redis.
 
 This repo is what the template builds. Each service has its own folder:
