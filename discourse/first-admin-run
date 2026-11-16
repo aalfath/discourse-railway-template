@@ -1,0 +1,24 @@
+#!/bin/bash
+# runit service: create the first admin once, then idle.
+exec 2>&1
+MARK=/shared/state/railway-first-admin.done
+
+if [ -f "$MARK" ]; then
+  exec sleep infinity
+fi
+if [ -z "${ADMIN_PASSWORD:-}" ]; then
+  echo "railway-first-admin: ADMIN_PASSWORD not set, skipping (create an admin with: cd /var/www/discourse && rake admin:create)"
+  exec sleep infinity
+fi
+
+# Wait until migrations are done and unicorn answers through nginx.
+until curl -fsS -o /dev/null http://127.0.0.1/srv/status; do sleep 5; done
+
+cd /var/www/discourse
+if su discourse -c 'bundle exec rails runner /usr/local/share/railway/first-admin.rb'; then
+  mkdir -p /shared/state && touch "$MARK"
+  exec sleep infinity
+fi
+echo "railway-first-admin: failed, retrying in 60 s"
+sleep 60
+exit 1
