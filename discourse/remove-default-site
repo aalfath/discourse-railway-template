@@ -1,0 +1,6 @@
+#!/bin/bash
+# runit boot step (/etc/runit/1.d), runs before nginx starts.
+# Debian's default nginx site listens on port 80 as default_server and answers 404 to everything.
+# The Discourse image deletes it, but on Railway the deleted symlink can come back
+# (seen 2026-11-16: the image layer's deletion wasn't applied), so remove it at boot as well.
+rm -f /etc/nginx/sites-enabled/default
